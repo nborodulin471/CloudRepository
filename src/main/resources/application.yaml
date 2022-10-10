@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: myPassword
+  servlet:
+    multipart:
+      max-file-size: 50MB
+  jpa:
+    hibernate:
+      ddl-auto: update
+jwt:
+  sessionTime: 120000000
+  secret: secret_key
