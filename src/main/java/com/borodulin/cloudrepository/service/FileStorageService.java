@@ -16,11 +16,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FileStorageService {
+    private final FileUploadUtil fileUploadUtil;
     private final FileInfoDao fileInfoDao;
 
     @Transactional
     public void uploadFile(FileInfo fileInfo, MultipartFile multipartFile) throws IOException {
-        FileUploadUtil.saveFile(fileInfo.getFilename(), multipartFile);
+        fileUploadUtil.saveFile(fileInfo.getFilename(), multipartFile);
         fileInfoDao.save(fileInfo);
     }
 
@@ -38,7 +39,7 @@ public class FileStorageService {
     @Transactional
     public void deleteFile(String filename, String owner) {
         FileInfo fileInfo = findFileInfoBy(owner, filename);
-        FileUploadUtil.deleteFile(fileInfo.getFilename());
+        fileUploadUtil.deleteFile(fileInfo.getFilename());
         fileInfoDao.delete(fileInfo);
     }
 
@@ -50,7 +51,7 @@ public class FileStorageService {
 
     public Resource getFile(String filename, String owner) {
         String name = findFileInfoBy(owner, filename).getFilename();
-        return FileUploadUtil.uploadFile(name);
+        return fileUploadUtil.uploadFile(name);
     }
 
     private FileInfo findFileInfoBy(String owner, String filename) {

@@ -1,8 +1,8 @@
 package com.borodulin.cloudrepository.service.util;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,10 +14,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+@Component
 public class FileUploadUtil {
-    private static Path ROOT = Paths.get("files-upload");
+    private static final Path ROOT = Paths.get("files-upload");
 
-    public static void saveFile(String fileName, MultipartFile multipartFile) throws IOException {
+    public void saveFile(String fileName, MultipartFile multipartFile) throws IOException {
         if (!Files.exists(ROOT)) {
             Files.createDirectories(ROOT);
         }
@@ -31,7 +32,7 @@ public class FileUploadUtil {
         }
     }
 
-    public static Resource uploadFile(String name) {
+    public Resource uploadFile(String name) {
         try {
             Path file = ROOT.resolve(name);
             Resource resource = new UrlResource(file.toUri());
@@ -46,7 +47,7 @@ public class FileUploadUtil {
         }
     }
 
-    public static void deleteFile(String name) {
+    public void deleteFile(String name) {
         try {
             Path file = ROOT.resolve(name);
             FileSystemUtils.deleteRecursively(file);
