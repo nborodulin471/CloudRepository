@@ -51,7 +51,8 @@ public class FileStorageService {
 
     public Resource getFile(String filename, String owner) {
         String name = findFileInfoBy(owner, filename).getFilename();
-        return fileUploadUtil.uploadFile(name);
+        return fileUploadUtil.uploadFile(name)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден файл"));
     }
 
     private FileInfo findFileInfoBy(String owner, String filename) {

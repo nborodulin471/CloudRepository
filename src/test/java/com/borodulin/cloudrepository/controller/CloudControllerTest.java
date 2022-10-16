@@ -39,6 +39,14 @@ class CloudControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private static FileInfo createFileInfo() {
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setFilename(FILE_NAME);
+        fileInfo.setSize(4L);
+        fileInfo.setOwner(OWNER);
+        return fileInfo;
+    }
+
     @Test
     @WithMockUser(value = "spring")
     void getFile() throws Exception {
@@ -117,11 +125,17 @@ class CloudControllerTest {
         verifyNoMoreInteractions(fileStorageService);
     }
 
-    private static FileInfo createFileInfo() {
-        FileInfo fileInfo = new FileInfo();
-        fileInfo.setFilename(FILE_NAME);
-        fileInfo.setSize(4L);
-        fileInfo.setOwner(OWNER);
-        return fileInfo;
+    @Test
+    @WithMockUser(value = "spring")
+    void handleExceptions() throws Exception {
+        when(fileStorageService.getFile(any(), any())).thenThrow(IllegalArgumentException.class);
+
+        MvcResult result = mockMvc.perform(get("/file?filename=" + FILE_NAME))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        assertFalse(result.getResponse().getContentAsString().isEmpty());
+        verify(fileStorageService).getFile(FILE_NAME, OWNER);
+        verifyNoMoreInteractions(fileStorageService);
     }
 }
