@@ -1,0 +1,1 @@
+insert into file_info(size, filename, owner) values(100, 'test.txt', 'admin');

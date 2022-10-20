@@ -7,10 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -94,7 +99,7 @@ class FileStorageServiceTest {
     @Test
     void getFile() {
         when(fileInfoDao.findByOwnerAndFilename(any(), any())).thenReturn(List.of(fileInfo));
-        when(fileUploadUtil.uploadFile(any())).thenReturn(null);
+        when(fileUploadUtil.uploadFile(any())).thenReturn(Optional.of(getTestFile()));
 
         sut.getFile(FILE_NAME, OWNER);
 
@@ -107,5 +112,10 @@ class FileStorageServiceTest {
         FileInfo fileInfo = new FileInfo();
         fileInfo.setFilename(FILE_NAME);
         return fileInfo;
+    }
+
+    public static Resource getTestFile() {
+        Path file = Paths.get("src/test/resources").resolve("test.txt");
+        return new FileSystemResource(file);
     }
 }
